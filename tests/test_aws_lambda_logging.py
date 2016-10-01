@@ -46,7 +46,7 @@ def test_setup_with_valid_log_levels(root_logger, logger, stdout, level):
 
 def test_setup_with_invalid_log_level(root_logger, logger, stdout):
     from aws_lambda_logging import setup
-    setup('not a valid log level', request_id='request id!', another='value')
+    setup('not a valid log level')  # writes a log event
 
     log_dict = json.loads(stdout.getvalue())
 
