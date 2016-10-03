@@ -20,4 +20,6 @@ setup(
     long_description=long_description,
     py_modules=['aws_lambda_logging'],
     tests_require=test_requirements,
+    url='https://gitlab.com/hadr/aws_lambda_logging',
+    licence='MIT',
 )
