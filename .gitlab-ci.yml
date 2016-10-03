@@ -31,4 +31,6 @@ Patch release:
     - git push --tags git@gitlab.com:$CI_PROJECT_PATH.git master
     - python setup.py sdist
     - twine upload dist/*
+  only:
+    - master@hadr/aws_lambda_logging
   when: manual
