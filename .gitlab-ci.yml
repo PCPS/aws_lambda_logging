@@ -33,3 +33,4 @@ Patch release:
     - twine upload dist/*
   only:
     - master@hadr/aws_lambda_logging
+  when: manual
