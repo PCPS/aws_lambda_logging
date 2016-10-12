@@ -74,3 +74,10 @@ def check_log_dict(log_dict):
     assert 'level' in log_dict
     assert 'location' in log_dict
     assert 'message' in log_dict
+
+
+def test_with_disable_json(root_logger, logger, stdout):
+    from aws_lambda_logging import setup
+    setup(disable_json="True")
+    logger.info(u"Hello")
+    assert stdout.getvalue().strip() == u"Hello"
