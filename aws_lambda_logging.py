@@ -18,7 +18,10 @@ class JsonFormatter(logging.Formatter):
         record_dict = record.__dict__.copy()
         record_dict['asctime'] = self.formatTime(record)
         record_dict['message'] = record.getMessage()
-        log_dict = {k: v % record_dict for k, v in self.format_dict.items()}
+        log_dict = {k: v % record_dict
+                    for k, v in self.format_dict.items()
+                    if v
+                    }
         return json.dumps(log_dict).decode('utf-8')
 
 
