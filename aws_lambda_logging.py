@@ -36,8 +36,7 @@ class JsonFormatter(logging.Formatter):
         return json.dumps(log_dict).decode('utf-8')
 
 
-def setup(level='DEBUG', **kwargs):
-    disable_json = kwargs.pop('disable_json', False)
+def setup(level='DEBUG', disable_json=False, **kwargs):
     if not disable_json:
         for handler in logging.root.handlers:
             handler.setFormatter(JsonFormatter(**kwargs))
