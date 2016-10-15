@@ -36,10 +36,10 @@ class JsonFormatter(logging.Formatter):
         return json.dumps(log_dict).decode('utf-8')
 
 
-def setup(level='DEBUG', disable_json=False, **kwargs):
-    if not disable_json:
+def setup(level='DEBUG', formatter_cls=JsonFormatter, **kwargs):
+    if formatter_cls:
         for handler in logging.root.handlers:
-            handler.setFormatter(JsonFormatter(**kwargs))
+            handler.setFormatter(formatter_cls(**kwargs))
 
     try:
         logging.root.setLevel(level)
