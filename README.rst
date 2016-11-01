@@ -2,9 +2,9 @@
 AWS Lambda Logging
 ==================
 
-.. image:: https://gitlab.com/hadr/aws_lambda_logging/badges/master/build.svg
+.. image:: https://gitlab.com/hadrien/aws_lambda_logging/badges/master/build.svg
 
-.. image:: https://gitlab.com/hadr/aws_lambda_logging/badges/master/coverage.svg?job=Run%20py.test
+.. image:: https://gitlab.com/hadrien/aws_lambda_logging/badges/master/coverage.svg?job=Run%20py.test
 
 Better logging for aws lambda running on python runtime environment with a
 highly opinionated json formatting to ease parsing on any logging system.
