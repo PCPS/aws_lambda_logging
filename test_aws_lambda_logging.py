@@ -42,14 +42,15 @@ def test_setup_with_valid_log_levels(root_logger, logger, stdout, level):
     assert 'CRITICAL' == log_dict['level']
     assert 'This is a test' == log_dict['message']
     assert 'request id!' == log_dict['request_id']
+    assert 'exception' not in log_dict
 
 
-def test_setup_exception_with_valid_log_levels(root_logger, logger, stdout):
+def test_logging_exception_traceback(root_logger, logger, stdout):
     from aws_lambda_logging import setup
     setup('DEBUG', request_id='request id!', another='value')
 
     try:
-        raise('Exception')
+        raise Exception('Boom')
     except:
         logger.exception('This is a test')
 

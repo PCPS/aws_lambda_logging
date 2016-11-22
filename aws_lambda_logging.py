@@ -26,6 +26,7 @@ class JsonFormatter(logging.Formatter):
         if record.exc_info:
             # Cache the traceback text to avoid converting it multiple times
             # (it's constant anyway)
+            # from logging.Formatter:format
             if not record.exc_text:
                 record.exc_text = self.formatException(record.exc_info)
 
