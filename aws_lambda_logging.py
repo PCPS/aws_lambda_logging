@@ -22,6 +22,16 @@ class JsonFormatter(logging.Formatter):
                     for k, v in self.format_dict.items()
                     if v
                     }
+
+        if record.exc_info:
+            # Cache the traceback text to avoid converting it multiple times
+            # (it's constant anyway)
+            if not record.exc_text:
+                record.exc_text = self.formatException(record.exc_info)
+
+        if record.exc_text:
+            log_dict['exception'] = record.exc_text
+
         return json.dumps(log_dict).decode('utf-8')
 
 

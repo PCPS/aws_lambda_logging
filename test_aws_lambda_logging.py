@@ -44,6 +44,21 @@ def test_setup_with_valid_log_levels(root_logger, logger, stdout, level):
     assert 'request id!' == log_dict['request_id']
 
 
+def test_setup_exception_with_valid_log_levels(root_logger, logger, stdout):
+    from aws_lambda_logging import setup
+    setup('DEBUG', request_id='request id!', another='value')
+
+    try:
+        raise('Exception')
+    except:
+        logger.exception('This is a test')
+
+    log_dict = json.loads(stdout.getvalue())
+
+    check_log_dict(log_dict)
+    assert 'exception' in log_dict
+
+
 def test_setup_with_invalid_log_level(root_logger, logger, stdout):
     from aws_lambda_logging import setup
     setup('not a valid log level')  # writes a log event
