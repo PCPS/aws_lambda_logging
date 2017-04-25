@@ -51,7 +51,7 @@ def test_logging_exception_traceback(root_logger, logger, stdout):
 
     try:
         raise Exception('Boom')
-    except:
+    except Exception:
         logger.exception('This is a test')
 
     log_dict = json.loads(stdout.getvalue())

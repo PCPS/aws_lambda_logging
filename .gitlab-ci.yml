@@ -5,17 +5,16 @@ stages:
   - Test
   - Release
 
-Run py.test:
-  image: python:2.7
+Run tox:
+  image: python
   stage: Test
   before_script:
-    - pip install -r requirements-tests.txt
-    - pip install -e .
-  script: py.test
+    - pip install -e .[tests]
+  script: tox
 
 
 Patch release:
-  image: python:2.7
+  image: python
   stage: Release
   before_script:
     - eval $(ssh-agent -s)
