@@ -31,5 +31,5 @@ Patch release:
     - python setup.py sdist
     - twine upload dist/*
   only:
-    - master@hadr/aws_lambda_logging
+    - master@hadrien/aws_lambda_logging
   when: manual
