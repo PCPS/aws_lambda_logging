@@ -1,4 +1,5 @@
 from os import path
+
 from setuptools import setup
 
 here = path.abspath(path.dirname(__file__))
@@ -16,7 +17,7 @@ setup(
     description='Nanolib to enhance logging in aws lambda',
     long_description=long_description,
     py_modules=['aws_lambda_logging'],
-    url='https://gitlab.com/hadr/aws_lambda_logging',
+    url='https://gitlab.com/hadrien/aws_lambda_logging',
     licence='MIT',
     extras_require={
         'tests': [
