@@ -62,10 +62,11 @@ It will output JSON formatted message:
     }
 
 You can input a JSON string:
+
 .. code::
-        ...
-        log.debug("{"Details": [1,2,3]}")
-        ...
+
+    log.debug('{"Details": [1,2,3]}')
+
 
 It will output JSON formatted message with the JSON string embedded properly:
 
