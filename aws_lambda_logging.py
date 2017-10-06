@@ -72,8 +72,7 @@ def setup(level='DEBUG', formatter_cls=JsonFormatter,
 
     try:
         logging.getLogger('boto').setLevel(boto_level)
+        logging.getLogger('boto3').setLevel(boto_level)
         logging.getLogger('botocore').setLevel(boto_level)
     except ValueError:
-        logging.getLogger('boto').setLevel(boto_level)
-        logging.getLogger('botocore').setLevel(boto_level)
         logging.root.error('Invalid log level: %s', boto_level)

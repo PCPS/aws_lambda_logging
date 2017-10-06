@@ -82,3 +82,8 @@ def test_with_no_formatter(root_logger, logger, stdout):
     setup(formatter_cls=None)
     logger.info(u'Hello')
     assert stdout.getvalue().strip() == u'Hello'
+
+
+def test_setup_with_bad_level_does_not_fail():
+    from aws_lambda_logging import setup
+    setup('DBGG', request_id='request id!', another='value')
