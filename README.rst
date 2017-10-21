@@ -85,3 +85,33 @@ It will output JSON formatted message with the JSON string embedded properly:
             ]
         }
     }
+
+
+You can input a dict:
+
+.. code::
+
+    log.debug({"Details": [1,2,3]})
+
+
+It will output JSON formatted message with the dict values:
+
+.. code::
+
+    {
+        "level": "DEBUG",
+        "timestamp": "2016-10-03 13:27:57,438",
+        "apigw_request_id": "323fee86-896d-11e6-b7fd-2d914ea80962",
+        "location": "root.handler:6",
+        "message": {
+            "Details": [
+                1,
+                2,
+                3
+            ]
+        }
+    }
+
+Any values that can otherwise be serialisabled to JSON are coerced to
+strings.  This behaviour can be changed by parsing a formatter
+function to the ``json_default`` keyword argument.

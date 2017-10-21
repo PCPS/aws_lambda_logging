@@ -4,23 +4,41 @@ import json
 import logging
 
 
+def json_formatter(obj):
+    """Formatter for unserialisable values."""
+    return str(obj)
+
+
 class JsonFormatter(logging.Formatter):
-    """AWS Lambda Logging formatter."""
+    """AWS Lambda Logging formatter.
+
+    Formats the log message as a JSON encoded string.  If the message is a
+    dict it will be used directly.  If the message can be parsed as JSON, then
+    the parse d value is used in the output record.
+    """
 
     def __init__(self, **kwargs):
+        """Return a JsonFormatter instance.
+
+        The `json_default` kwarg is used to specify a formatter for otherwise
+        unserialisable values.  It must not throw.  Defaults to a function that
+        coerces the value to a string.
+
+        Other kwargs are used to specify log field format strings.
+        """
         super(JsonFormatter, self).__init__()
         self.format_dict = {
             'timestamp': '%(asctime)s',
             'level': '%(levelname)s',
             'location': '%(name)s.%(funcName)s:%(lineno)d',
-            'message': '%(message)s',
         }
         self.format_dict.update(kwargs)
+        self.default_json_formatter = kwargs.pop(
+            'json_default', json_formatter)
 
     def format(self, record):
         record_dict = record.__dict__.copy()
         record_dict['asctime'] = self.formatTime(record)
-        record_dict['message'] = record.getMessage()
 
         log_dict = {
             k: v % record_dict
@@ -28,12 +46,17 @@ class JsonFormatter(logging.Formatter):
             if v
         }
 
-        # Attempt to decode the message as JSON, if so, merge it with the
-        # overall message for clarity.
-        try:
-            log_dict['message'] = json.loads(log_dict['message'])
-        except (TypeError, ValueError):
-            pass
+        if isinstance(record_dict['msg'], dict):
+            log_dict['message'] = record_dict['msg']
+        else:
+            log_dict['message'] = record.getMessage()
+
+            # Attempt to decode the message as JSON, if so, merge it with the
+            # overall message for clarity.
+            try:
+                log_dict['message'] = json.loads(log_dict['message'])
+            except (TypeError, ValueError):
+                pass
 
         if record.exc_info:
             # Cache the traceback text to avoid converting it multiple times
@@ -45,7 +68,7 @@ class JsonFormatter(logging.Formatter):
         if record.exc_text:
             log_dict['exception'] = record.exc_text
 
-        json_record = json.dumps(log_dict)
+        json_record = json.dumps(log_dict, default=self.default_json_formatter)
 
         if hasattr(json_record, 'decode'):  # pragma: no cover
             json_record = json_record.decode('utf-8')
