@@ -87,3 +87,42 @@ def test_with_no_formatter(root_logger, logger, stdout):
 def test_setup_with_bad_level_does_not_fail():
     from aws_lambda_logging import setup
     setup('DBGG', request_id='request id!', another='value')
+
+
+def test_with_dict_message(root_logger, logger, stdout):
+    from aws_lambda_logging import setup
+    setup('DEBUG', another='value')
+
+    msg = {'x': 'isx'}
+    logger.critical(msg)
+
+    log_dict = json.loads(stdout.getvalue())
+
+    assert msg == log_dict['message']
+
+
+def test_with_json_message(root_logger, logger, stdout):
+    from aws_lambda_logging import setup
+    setup('DEBUG', another='value')
+
+    msg = {'x': 'isx'}
+    logger.critical(json.dumps(msg))
+
+    log_dict = json.loads(stdout.getvalue())
+
+    assert msg == log_dict['message']
+
+
+def test_with_unserialisable_value_in_message(root_logger, logger, stdout):
+    from aws_lambda_logging import setup
+    setup('DEBUG', another='value')
+
+    class X:
+        pass
+
+    msg = {'x': X()}
+    logger.critical(msg)
+
+    log_dict = json.loads(stdout.getvalue())
+
+    assert log_dict['message']['x'].startswith('<')
