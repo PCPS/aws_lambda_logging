@@ -126,3 +126,13 @@ def test_with_unserialisable_value_in_message(root_logger, logger, stdout):
     log_dict = json.loads(stdout.getvalue())
 
     assert log_dict['message']['x'].startswith('<')
+
+
+def test_wrap():
+    from aws_lambda_logging import wrap
+
+    @wrap
+    def handler(event, context):
+        pass
+
+    handler(None, None)

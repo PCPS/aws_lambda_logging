@@ -1,7 +1,8 @@
 """Microlibrary to simplify logging in AWS Lambda."""
-
 import json
 import logging
+import os
+from functools import wraps
 
 
 def json_formatter(obj):
@@ -99,3 +100,24 @@ def setup(level='DEBUG', formatter_cls=JsonFormatter,
         logging.getLogger('botocore').setLevel(boto_level)
     except ValueError:
         logging.root.error('Invalid log level: %s', boto_level)
+
+
+def wrap(lambda_handler):
+    """Lambda handler decorator that setup logging when handler is called.
+
+    Adds ``request=context.aws_request_id`` on all log messages.
+
+    From environment variables:
+    - ``log_level`` set the global log level (default to ``DEBUG``);
+    - ``boto_level`` set boto log level (default to ``WARN``);
+    """
+    @wraps(lambda_handler)
+    def wrapper(event, context):
+        setup(
+            level=os.getenv('log_level', 'DEBUG'),
+            request_id=getattr(context, 'aws_request_id', None),
+            boto_level=os.getenv('boto_level', 'WARN'),
+        )
+        return lambda_handler(event, context)
+
+    return wrapper
