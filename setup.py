@@ -21,6 +21,7 @@ setup(
     licence='MIT',
     extras_require={
         'tests': [
+            'flake8-import-order',
             'pylama',
             'pytest',
             'pytest-cov',
