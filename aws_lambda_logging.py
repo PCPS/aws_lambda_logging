@@ -105,7 +105,7 @@ def setup(level='DEBUG', formatter_cls=JsonFormatter,
 def wrap(lambda_handler):
     """Lambda handler decorator that setup logging when handler is called.
 
-    Adds ``request=context.aws_request_id`` on all log messages.
+    Adds ``request=context.request_id`` on all log messages.
 
     From environment variables:
     - ``log_level`` set the global log level (default to ``DEBUG``);
@@ -113,9 +113,15 @@ def wrap(lambda_handler):
     """
     @wraps(lambda_handler)
     def wrapper(event, context):
+        try:
+            request_id = event['requestContext']['requestId']
+
+        except (TypeError, KeyError):
+            request_id = getattr(context, 'aws_request_id', None)
+
         setup(
             level=os.getenv('log_level', 'DEBUG'),
-            request_id=getattr(context, 'aws_request_id', None),
+            request_id=request_id,
             boto_level=os.getenv('boto_level', 'WARN'),
         )
         return lambda_handler(event, context)

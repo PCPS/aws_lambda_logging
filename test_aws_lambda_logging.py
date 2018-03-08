@@ -136,3 +136,18 @@ def test_wrap():
         pass
 
     handler(None, None)
+
+
+def test_wrap_when_request_id_is_in_event():
+    from aws_lambda_logging import wrap
+
+    @wrap
+    def handler(event, context):
+        pass
+
+    event = {
+        'requestContext': {
+            'requestId': 'c19e27e6-230b-11e8-ba47-a95ceb1c6480',
+        }
+    }
+    handler(event, None)
