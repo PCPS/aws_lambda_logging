@@ -1,8 +1,8 @@
 """Microlibrary to simplify logging in AWS Lambda."""
+import functools
 import json
 import logging
 import os
-from functools import wraps
 
 
 def json_formatter(obj):
@@ -111,7 +111,7 @@ def wrap(lambda_handler):
     - ``log_level`` set the global log level (default to ``DEBUG``);
     - ``boto_level`` set boto log level (default to ``WARN``);
     """
-    @wraps(lambda_handler)
+    @functools.wraps(lambda_handler)
     def wrapper(event, context):
         try:
             request_id = event['requestContext']['requestId']
