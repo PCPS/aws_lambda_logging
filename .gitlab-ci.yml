@@ -6,7 +6,7 @@ stages:
   - Release
 
 Run tox:
-  image: python
+  image: python:3.6
   stage: Test
   before_script:
     - pip install -e .[tests]
