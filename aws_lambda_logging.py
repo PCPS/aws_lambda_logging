@@ -27,7 +27,9 @@ class JsonFormatter(logging.Formatter):
 
         Other kwargs are used to specify log field format strings.
         """
-        super(JsonFormatter, self).__init__()
+        datefmt = kwargs.pop('datefmt', None)
+
+        super(JsonFormatter, self).__init__(datefmt=datefmt)
         self.format_dict = {
             'timestamp': '%(asctime)s',
             'level': '%(levelname)s',
@@ -39,7 +41,7 @@ class JsonFormatter(logging.Formatter):
 
     def format(self, record):
         record_dict = record.__dict__.copy()
-        record_dict['asctime'] = self.formatTime(record)
+        record_dict['asctime'] = self.formatTime(record, self.datefmt)
 
         log_dict = {
             k: v % record_dict
