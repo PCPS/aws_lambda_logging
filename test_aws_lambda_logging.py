@@ -73,7 +73,9 @@ def test_setup_with_invalid_log_level(root_logger, logger, stdout):
 def check_log_dict(log_dict):
     assert 'timestamp' in log_dict
     assert 'level' in log_dict
-    assert 'location' in log_dict
+    assert 'filename' in log_dict
+    assert 'funcName' in log_dict
+    assert 'line' in log_dict
     assert 'message' in log_dict
 
 

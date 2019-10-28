@@ -18,7 +18,7 @@ setup(
     long_description=long_description,
     py_modules=['aws_lambda_logging'],
     url='https://gitlab.com/hadrien/aws_lambda_logging',
-    licence='MIT',
+    license='MIT',
     extras_require={
         'tests': [
             'flake8-import-order',
@@ -39,5 +39,6 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
     ],
 )

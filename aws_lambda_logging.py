@@ -2,7 +2,14 @@
 import json
 import logging
 import os
+import sys
 from functools import wraps
+
+# this is a pointer to the module object instance itself.
+this = sys.modules[__name__]
+
+# we can explicitly make assignments on it
+this.formatter_instance = None
 
 
 def json_formatter(obj):
@@ -30,14 +37,20 @@ class JsonFormatter(logging.Formatter):
         datefmt = kwargs.pop('datefmt', None)
 
         super(JsonFormatter, self).__init__(datefmt=datefmt)
+        # '%(filename)s %(funcName)s %(name)s %(message)s %(module)s %(lineno)d'
         self.format_dict = {
             'timestamp': '%(asctime)s',
             'level': '%(levelname)s',
-            'location': '%(name)s.%(funcName)s:%(lineno)d',
+            'filename': '%(filename)s',
+            'funcName': '%(funcName)s',
+            'line': '%(lineno)d'
         }
         self.format_dict.update(kwargs)
         self.default_json_formatter = kwargs.pop(
             'json_default', json_formatter)
+
+    def add_field(self, **kwargs):
+        self.format_dict.update(kwargs)
 
     def format(self, record):
         record_dict = record.__dict__.copy()
@@ -83,8 +96,9 @@ def setup(level='DEBUG', formatter_cls=JsonFormatter,
           boto_level=None, **kwargs):
     """Overall Metadata Formatting."""
     if formatter_cls:
+        this.formatter_instance = formatter_cls(**kwargs)
         for handler in logging.root.handlers:
-            handler.setFormatter(formatter_cls(**kwargs))
+            handler.setFormatter(this.formatter_instance)
 
     try:
         logging.root.setLevel(level)
@@ -104,6 +118,11 @@ def setup(level='DEBUG', formatter_cls=JsonFormatter,
         logging.root.error('Invalid log level: %s', boto_level)
 
 
+def add_field(**kwargs):
+    if this.formatter_instance:
+        this.formatter_instance.add_field(**kwargs)
+
+
 def wrap(lambda_handler):
     """Lambda handler decorator that setup logging when handler is called.
 
@@ -113,6 +132,7 @@ def wrap(lambda_handler):
     - ``log_level`` set the global log level (default to ``DEBUG``);
     - ``boto_level`` set boto log level (default to ``WARN``);
     """
+
     @wraps(lambda_handler)
     def wrapper(event, context):
         try:
@@ -123,7 +143,10 @@ def wrap(lambda_handler):
 
         setup(
             level=os.getenv('log_level', 'DEBUG'),
-            request_id=request_id,
+            aws_request_id=request_id,
+            function_name=getattr(context, 'function_name', None),
+            function_version=getattr(context, 'function_version', None),
+            invoked_function_arn=getattr(context, 'invoked_function_arn', None),
             boto_level=os.getenv('boto_level', 'WARN'),
         )
         return lambda_handler(event, context)
