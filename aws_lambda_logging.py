@@ -84,7 +84,7 @@ class JsonFormatter(logging.Formatter):
         if record.exc_text:
             log_dict['exception'] = record.exc_text
 
-        json_record = json.dumps(log_dict, default=self.default_json_formatter)
+        json_record = json.dumps(log_dict, default=self.default_json_formatter, ensure_ascii=False)
 
         if hasattr(json_record, 'decode'):  # pragma: no cover
             json_record = json_record.decode('utf-8')
